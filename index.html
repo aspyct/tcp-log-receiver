@@ -2,18 +2,76 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>TCP Log Receiver</title>
+    <style>
+      html {
+        overflow: hidden;
+        height: 100%;
+      }
+
+      body {
+        font-family: 'monaco', monospace;
+        height: 100%;
+        margin: 0px;
+        padding: 0px;
+        color: #444;
+      }
+
+      #connection-panel {
+        float: left;
+        width: 190px;
+        height: 100%;
+        background-color: #EEE;
+        padding: 10px;
+      }
+
+      ul {
+        margin: 0;
+      }
+
+      li.live, li.live a, li.live a.visited {
+        color: green;
+      }
+
+      li.dead, li.dead a, li.live a.visited {
+        color: red;
+      }
+
+      ul a {
+        cursor: pointer;
+      }
+
+      pre {
+        font-family: 'monaco', monospace;
+        display: block;
+        overflow: scroll;
+        margin-left: 190px;
+        margin: 0;
+        padding: 10px;
+      }
+    </style>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    <header>
+      <form id="server-settings">
+        <label for="address">Server address:</label>
+        <input name="address" value="127.0.0.1" />
+        <label for="port">port:</label>
+        <input name="port" value="1911" />
+        <input type="button" name="start" value="Start" />
+        <input type="button" name="stop" value="Stop" />
+      </form>
+    </header>
+    <div id="connection-panel">
+        <div id="no-connection-yet">
+            No connection yet
+        </div>
+        <ul id="connection-list">
+        </ul>
+    </div>
+    <pre id="log-container">Please select a connection in the left panel.</pre>
   </body>
-
   <script>
-    // You can also require other files to run in this process
     require('./renderer.js')
   </script>
 </html>
