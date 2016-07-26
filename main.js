@@ -12,6 +12,9 @@ function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600})
 
+  // Remove the menu bar
+  // mainWindow.setMenu(null);
+
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`)
 

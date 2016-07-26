@@ -4,23 +4,40 @@
     <meta charset="UTF-8">
     <title>TCP Log Receiver</title>
     <style>
-      html {
-        overflow: hidden;
-        height: 100%;
-      }
+			html,body {
+				margin: 0;
+				padding: 0;
+				height: 100%;
 
-      body {
-        font-family: 'monaco', monospace;
-        height: 100%;
-        margin: 0px;
-        padding: 0px;
-        color: #444;
-      }
+				font-family: 'monaco', 'inconsolata', monospace;
+				color: #444;
+			}
+
+			header {
+				border-bottom: 1px solid black;
+				height: 20px;
+			}
+
+			footer {
+				position: absolute;
+				height: 20px;
+				width: 100%;
+				bottom: 0;
+				border-top: 1px solid black;
+			}
+
+			#container {
+				position: relative;
+				height: auto;
+				min-height: 100%;
+			}
 
       #connection-panel {
-        float: left;
+				position: absolute;
+				left: 0;
+				top: 20px;
+				bottom: 20px;
         width: 190px;
-        height: 100%;
         background-color: #EEE;
         padding: 10px;
       }
@@ -37,39 +54,52 @@
         color: red;
       }
 
+      li.unread {
+        font-weight: bold;
+      }
+
       ul a {
         cursor: pointer;
       }
 
       pre {
+				position: absolute;
+				left: 210px;
+				right: 0;
+				top: 20px;
+				bottom: 20px;
         font-family: 'monaco', monospace;
         display: block;
-        overflow: scroll;
-        margin-left: 190px;
-        margin: 0;
+        overflow: auto;
         padding: 10px;
+				margin: 0;
       }
     </style>
   </head>
   <body>
-    <header>
-      <form id="server-settings">
-        <label for="address">Server address:</label>
-        <input name="address" value="127.0.0.1" />
-        <label for="port">port:</label>
-        <input name="port" value="1911" />
-        <input type="button" name="start" value="Start" />
-        <input type="button" name="stop" value="Stop" />
-      </form>
-    </header>
-    <div id="connection-panel">
-        <div id="no-connection-yet">
-            No connection yet
-        </div>
-        <ul id="connection-list">
-        </ul>
-    </div>
-    <pre id="log-container">Please select a connection in the left panel.</pre>
+		<div id="container">
+			<header>
+				<form id="server-settings">
+					<label for="address">Server address:</label>
+					<input name="address" value="127.0.0.1" />
+					<label for="port">port:</label>
+					<input name="port" value="1911" />
+					<input type="button" name="start" value="Start" />
+					<input type="button" name="stop" value="Stop" />
+				</form>
+			</header>
+			<div id="connection-panel">
+					<div id="no-connection-yet">
+							No connection yet
+					</div>
+					<ul id="connection-list">
+					</ul>
+			</div>
+			<pre id="log-container">Please select a connection in the left panel.</pre>
+			<footer>
+				Gallia est omnis divisa in partes tres.
+			</footer>
+		</div>
   </body>
   <script>
     require('./renderer.js')

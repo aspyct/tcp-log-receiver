@@ -2,103 +2,136 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 var net = require('net');
-
 var server = net.createServer();
 
-(function(server) {
-  var connectionList = document.getElementById('connection-list');
-  var logContainer = document.getElementById('log-container');
-  var noConnectionLabel = document.getElementById('no-connection-yet');
-  var selectedConnection = null;
+class LocalEvent {
+  constructor() {
+    this.listeners = [];
+  }
 
-  var Connection = function (socket) {
+  listen(listener) {
+    this.listeners.push(listener);
+  }
+
+  unlisten(listener) {
+    var pos = this.listeners.indexOf(listener);
+    if (pos > -1) {
+      this.listeners.splice(pos, 1);
+    }
+  }
+
+  trigger() {
+    for (var i = 0; i < this.listeners.length; ++i) {
+      var listener = this.listeners[i];
+      listener.apply(listener, arguments);
+    }
+  }
+}
+
+var connectionList = document.getElementById('connection-list');
+var logContainer = document.getElementById('log-container');
+var noConnectionLabel = document.getElementById('no-connection-yet');
+var selectedConnection = null;
+
+class Connection {
+  constructor(socket) {
     this.socket = socket;
-
     var address = socket.address();
     this.name = address.address + ":" + address.port;
     this.logs = "";
-    
-    return this;
-  };
+    this.onLog = new LocalEvent();
+    this.onClose = new LocalEvent();
 
-  server.on('connection', function(socket) {
-    // Remove the "no connection" label
-    noConnectionLabel.style.display = 'none';
-    
-    var connection = new Connection(socket);
-
-    // Create and add the list entry for this connection
-    var listEntry = (function() {
-        var li = document.createElement('li');
-        var a = document.createElement('a');
-        a.innerText = connection.name;
-        a.onclick = function() {
-          openConnection(connection);
-        };
-
-        li.appendChild(a);
-        connectionList.appendChild(li);
-
-        // Show whether the connection is dead or alive
-        li.className = 'live';
-        connection.socket.on('close', function() {
-          li.className = 'dead';
-        });
-
-        return li;
-    }());
-
-    socket.on('data', function(data) {
-      connection.logs += data;
-      if (connection == selectedConnection) {
-        logContainer.innerText += data;
-      }
+    var self 
+    socket.on('data', (data) => {
+      this.logs += data;
+      this.onLog.trigger(data);
     });
 
-    socket.on('close', function() {
-      connection.live = false;
+    socket.on('close', () => {
+      this.onClose.trigger();
     });
-  });
-
-  function openConnection(connection) {
-    selectedConnection = connection;
-    logContainer.innerText = connection.logs;
   }
-}(server));
+};
 
+server.on('connection', function(socket) {
+  // Remove the "no connection" label
+  noConnectionLabel.style.display = 'none';
+  
+  var connection = new Connection(socket);
 
-(function(server) {
-  var settingsForm = document.getElementById('server-settings');
-  var startButton = settingsForm.start;
-  var stopButton = settingsForm.stop;
-  var addressField = settingsForm.address;
-  var portField = settingsForm.port;
+  // Create and add the list entry for this connection
+  var listEntry = (function() {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.innerText = connection.name;
+      a.onclick = function() {
+        li.classList.remove('unread');
+        openConnection(connection);
+      };
 
-  startButton.onclick = function() {
-    this.disabled = true;
-    var address = addressField.value;
-    var port = parseInt(portField.value);
+      li.appendChild(a);
+      connectionList.appendChild(li);
 
-    server.listen(port, address);
-  };
+      // Show whether the connection is dead or alive
+      li.classList.add('live');
+      connection.onClose.listen(() => {
+        li.classList.remove('live');
+        li.classList.add('dead');
+      });
+      connection.onLog.listen(() => {
+        li.classList.add('unread');
+      });
 
-  stopButton.onclick = function() {
-    this.disabled = true;
-    server.close();
-  };
+      return li;
+  }());
+});
 
-  server.on('listening', function() {
-    stopButton.disabled = false;
-    stopButton.style.display = 'initial';
-    startButton.style.display = 'none';
-  });
+function openConnection(connection) {
+  if (selectedConnection != null) {
+    selectedConnection.onLog.unlisten(updateLogContainer);
+  }
 
-  server.on('close', function() {
-    startButton.disabled = false;
-    startButton.style.display = 'initial';
-    stopButton.style.display = 'none';
-  });
+  selectedConnection = connection;
+  connection.onLog.listen(updateLogContainer);
+  logContainer.innerText = connection.logs;
+}
 
-  settingsForm.stop.style.display = 'none';
-}(server));
+function updateLogContainer(message) {
+  logContainer.innerText += message;
+}
 
+var settingsForm = document.getElementById('server-settings');
+var startButton = settingsForm.start;
+var stopButton = settingsForm.stop;
+var addressField = settingsForm.address;
+var portField = settingsForm.port;
+
+startButton.onclick = function() {
+  this.disabled = true;
+  var address = addressField.value;
+  var port = parseInt(portField.value);
+
+  server.listen(port, address);
+};
+
+stopButton.onclick = function() {
+  this.disabled = true;
+  server.close();
+};
+
+server.on('listening', function() {
+  stopButton.disabled = false;
+  stopButton.style.display = 'initial';
+  startButton.style.display = 'none';
+});
+
+server.on('close', function() {
+  startButton.disabled = false;
+  startButton.style.display = 'initial';
+  stopButton.style.display = 'none';
+});
+
+settingsForm.stop.style.display = 'none';
+
+// vim: et ts=2 sw=2:
