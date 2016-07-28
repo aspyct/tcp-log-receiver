@@ -1,39 +1,27 @@
 var net = require('net');
 var server = net.createServer();
-
-class LocalEvent {
-  constructor() {
-    this.listeners = [];
-  }
-
-  listen(listener) {
-    this.listeners.push(listener);
-  }
-
-  unlisten(listener) {
-    var pos = this.listeners.indexOf(listener);
-    if (pos > -1) {
-      this.listeners.splice(pos, 1);
-    }
-  }
-
-  trigger() {
-    for (var i = 0; i < this.listeners.length; ++i) {
-      var listener = this.listeners[i];
-      listener.apply(listener, arguments);
-    }
-  }
-}
+var LocalEvent = require('./localevent.js');
+var settings = require('./settings.js');
 
 // Register action for Settings button
 document.getElementById('settings-button').onclick = () => {
   window.open('settings.html');
 };
 
-var connectionList = document.getElementById('connection-list');
 var logContainer = document.getElementById('log-container');
-var noConnectionLabel = document.getElementById('no-connection-yet');
 var selectedConnection = null;
+
+class ConnectionList {
+  constructor() {
+    this._connections = [];
+    this.onNewConnection = new LocalEvent();
+  }
+
+  addConnection(connection) {
+    this._connections.push(connection);
+    this.onNewConnection.trigger(this, connection);
+  }
+}
 
 class Connection {
   constructor(socket) {
@@ -56,54 +44,66 @@ class Connection {
   }
 };
 
-server.on('connection', function(socket) {
+var connectionList = new ConnectionList();
+
+var firstConnectionListener = connectionList.onNewConnection.listen((_, conn) => {
+  // Run this only for the first connection
+  firstConnectionListener.unregister();
+
   // Remove the "no connection" label
-  noConnectionLabel.style.display = 'none';
-  
-  var connection = new Connection(socket);
+  document.getElementById('no-connection-yet').style.display = 'none';
 
-  // Create and add the list entry for this connection
-  var listEntry = (function() {
-      var li = document.createElement('li');
-      var a = document.createElement('a');
-      a.innerText = connection.name;
-      a.onclick = function() {
-        li.classList.remove('unread');
-        openConnection(connection);
-      };
-
-      li.appendChild(a);
-      connectionList.appendChild(li);
-
-      // Show whether the connection is dead or alive
-      li.classList.add('live');
-      connection.onClose.listen(() => {
-        li.classList.remove('live');
-        li.classList.add('dead');
-      });
-      connection.onLog.listen(() => {
-        li.classList.add('unread');
-      });
-
-      return li;
-  }());
+  // And open the first connection
+  openConnection(conn);
 });
 
-function openConnection(connection) {
-  if (selectedConnection != null) {
-    selectedConnection.onLog.unlisten(updateLogContainer);
-  }
+connectionList.onNewConnection.listen((_, connection) => {
+  // Create and add the list entry for this connection
+  var li = document.createElement('li');
+  var a = document.createElement('a');
+  a.innerText = connection.name;
+  a.onclick = function() {
+    li.classList.remove('unread');
+    openConnection(connection);
+  };
 
-  selectedConnection = connection;
-  connection.onLog.listen(updateLogContainer);
+  li.appendChild(a);
+
+  // Show whether the connection is dead or alive
+  li.classList.add('live');
+  connection.onClose.listen(() => {
+    li.classList.remove('live');
+    li.classList.add('dead');
+  });
+  connection.onLog.listen(() => {
+    li.classList.add('unread');
+  });
+
+  document.getElementById('connection-list').appendChild(li);
+});
+
+server.on('connection', function(socket) {
+  var connection = new Connection(socket);
+  connectionList.addConnection(connection);
+});
+
+var logListener = LocalEvent.NullListener;
+function openConnection(connection) {
+  logListener.unregister();
+  logListener = connection.onLog.listen(updateLogContainer);
+
   logContainer.innerText = connection.logs;
 }
 
 function updateLogContainer(connection, message) {
+  // Append new message
   logContainer.innerText += message;
+
+  // Scroll to bottom
+  logContainer.scrollTop = logContainer.scrollHeight;
 }
 
-var settingsForm = document.getElementById('server-settings');
+var settingsForm = document.getElementById('toolbar');
 var startButton = settingsForm.start;
 var stopButton = settingsForm.stop;
 var addressField = settingsForm.address;
@@ -111,8 +111,8 @@ var portField = settingsForm.port;
 
 startButton.onclick = function() {
   this.disabled = true;
-  var address = addressField.value;
-  var port = parseInt(portField.value);
+  var address = settings.serverHost;
+  var port = settings.serverPort;
 
   server.listen(port, address);
 };

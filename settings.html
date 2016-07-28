@@ -15,16 +15,17 @@
   </body>
   <script>
     var settingsForm = document.getElementById('settings-form');
+    var settings = require('./setting.js');
     settingsForm.saveButton.onclick = () => {
-      localStorage.setItem('server.host', settingsForm.host.value);
-      localStorage.setItem('server.port', parseInt(settingsForm.port.value));
+      settings.serverHost = settingsForm.host.value;
+      settings.serverPort = parseInt(settingsForm.port.value);
     };
 
     settingsForm.resetButton.onclick = resetForm;
 
     function resetForm() {
-      settingsForm.host.value = localStorage.getItem('server.host');
-      settingsForm.port.value = localStorage.getItem('server.port');
+      settingsForm.host.value = settings.serverHost;
+      settingsForm.port.value = settings.serverPort;
     }
 
     resetForm();
