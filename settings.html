@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Settings</title>
+  </head>
+  <body>
+    <form id="settings-form">
+      <label for="host">Host:</label>
+      <input type="text" name="host" value="127.0.0.1" />
+      <label for="port">Port:</label>
+      <input type="text" name="port" value="1911" />
+      <input type="button" name="resetButton" value="Reset" />
+      <input type="button" name="saveButton" value="Save" />
+    </form>
+  </body>
+  <script>
+    var settingsForm = document.getElementById('settings-form');
+    settingsForm.saveButton.onclick = () => {
+      localStorage.setItem('server.host', settingsForm.host.value);
+      localStorage.setItem('server.port', parseInt(settingsForm.port.value));
+    };
+
+    settingsForm.resetButton.onclick = resetForm;
+
+    function resetForm() {
+      settingsForm.host.value = localStorage.getItem('server.host');
+      settingsForm.port.value = localStorage.getItem('server.port');
+    }
+
+    resetForm();
+  </script>
+</html>
+<!-- vim: set et ts=2 sw=2: -->

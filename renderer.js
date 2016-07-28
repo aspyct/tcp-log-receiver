@@ -1,6 +1,3 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// All of the Node.js APIs are available in this process.
 var net = require('net');
 var server = net.createServer();
 
@@ -28,6 +25,11 @@ class LocalEvent {
   }
 }
 
+// Register action for Settings button
+document.getElementById('settings-button').onclick = () => {
+  window.open('settings.html');
+};
+
 var connectionList = document.getElementById('connection-list');
 var logContainer = document.getElementById('log-container');
 var noConnectionLabel = document.getElementById('no-connection-yet');
@@ -45,11 +47,11 @@ class Connection {
     var self 
     socket.on('data', (data) => {
       this.logs += data;
-      this.onLog.trigger(data);
+      this.onLog.trigger(this, data);
     });
 
     socket.on('close', () => {
-      this.onClose.trigger();
+      this.onClose.trigger(this);
     });
   }
 };
@@ -97,7 +99,7 @@ function openConnection(connection) {
   logContainer.innerText = connection.logs;
 }
 
-function updateLogContainer(message) {
+function updateLogContainer(connection, message) {
   logContainer.innerText += message;
 }
 
