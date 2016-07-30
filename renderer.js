@@ -3,22 +3,21 @@ var settings = require('./settings.js');
 var server = require('./server.js');
 var Select = require('./select.js');
 
-/* HTML nodes */
-var logContainer = document.getElementById('log-container');
-
-var firstConnectionListener = server.onConnection.listen((conn) => { 
-    // Run this only for the first connection
-    firstConnectionListener.unregister();
-
-    // Open the first connection
-    openConnection(conn);
-});
 
 /*
- * Connection list
+ * Connection list and log container
  */
 (function() {
     var select = new Select(document.getElementById('connection-list'));
+    var logContainer = document.getElementById('log-container');
+
+    var firstConnectionListener = server.onConnection.listen((conn) => { 
+        // Run this only for the first connection
+        firstConnectionListener.unregister();
+
+        // Open the first connection
+        openConnection(conn);
+    });
 
     select.onSelect.listen((conn) => {
         openConnection(conn);
@@ -27,24 +26,23 @@ var firstConnectionListener = server.onConnection.listen((conn) => {
     server.onConnection.listen((conn) => {
         select.add(conn);
     });
+
+    var logListener = LocalEvent.NullListener;
+    function openConnection(connection) {
+        logListener.unregister();
+        logListener = connection.onLog.listen(updateLogContainer);
+
+        logContainer.innerText = connection.logs;
+    }
+
+    function updateLogContainer(message) {
+        // Append new message
+        logContainer.innerText += message;
+
+        // Scroll to bottom
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }
 }());
-
-var logListener = LocalEvent.NullListener;
-function openConnection(connection) {
-    logListener.unregister();
-    logListener = connection.onLog.listen(updateLogContainer);
-
-    logContainer.innerText = connection.logs;
-}
-
-function updateLogContainer(message) {
-    // Append new message
-    logContainer.innerText += message;
-
-    // Scroll to bottom
-    logContainer.scrollTop = logContainer.scrollHeight;
-}
-
 
 (function() {
     /* Idle server form */

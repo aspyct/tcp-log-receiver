@@ -14,7 +14,8 @@ class Server {
             this.onStarted.trigger(this);
         });
         this._server.on('connection', (socket) => {
-            var connection = new Connection(socket);
+            /* Create a new Connection object and notify listeners */
+            var connection = new Connection(socket, this.onClosing);
             this.onConnection.trigger(connection, this);
         });
         this._server.on('close', () => {
@@ -34,13 +35,21 @@ class Server {
 };
 
 class Connection {
-    constructor(socket) {
+    constructor(socket, onServerClosing) {
         this.socket = socket;
         var address = socket.address();
         this.name = address.address + ":" + address.port;
         this.logs = "";
         this.onLog = new LocalEvent();
         this.onClose = new LocalEvent();
+
+        /* We must close the socket when the server requests it */
+        var terminator = onServerClosing.listen(() => {
+            socket.end();
+        });
+
+        /* Keep the socket alive as long as possible */
+        socket.setKeepAlive(true);
 
         // Make sure to receive utf8-decoded string
         socket.setEncoding('utf8');
@@ -52,6 +61,12 @@ class Connection {
 
         socket.on('close', () => {
             this.onClose.trigger(this);
+            terminator.unregister();
+        });
+
+        socket.on('end', () => {
+            /* Other side attempts to close the socket */
+            socket.end();
         });
     }
 
