@@ -1,104 +1,100 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>TCP Log Receiver</title>
-    <style>
-			html,body {
-				margin: 0;
-				padding: 0;
-				height: 100%;
+    <head>
+        <meta charset="UTF-8">
+        <title>TCP Log Receiver</title>
+        <style>
+            html,body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
 
-				font-family: 'monaco', 'inconsolata', monospace;
-				color: #444;
-			}
+                font-family: 'monaco', 'inconsolata', monospace;
+                color: #444;
+            }
 
-			header {
-				border-bottom: 1px solid black;
-				height: 20px;
-			}
+            header {
+                border-bottom: 1px solid black;
+                height: 20px;
+            }
 
-			footer {
-				position: absolute;
-				height: 20px;
-				width: 100%;
-				bottom: 0;
-				border-top: 1px solid black;
-			}
+            footer {
+                width: 100%;
+                bottom: 0;
+                border-top: 1px solid black;
+            }
 
-			#container {
-				position: relative;
-				height: auto;
-				min-height: 100%;
-			}
+            #container {
+                position: relative;
+                height: auto;
+                min-height: 100%;
+            }
 
-      #connection-panel {
-				position: absolute;
-				left: 0;
-				top: 20px;
-				bottom: 20px;
-        width: 190px;
-        background-color: #EEE;
-        padding: 10px;
-      }
+            #connection-panel {
+                width: 190px;
+                background-color: #EEE;
+                padding: 10px;
+            }
 
-      ul {
-        margin: 0;
-      }
+            ul {
+                margin: 0;
+            }
 
-      li.live, li.live a, li.live a.visited {
-        color: green;
-      }
+            li.live, li.live a, li.live a.visited {
+                color: green;
+            }
 
-      li.dead, li.dead a, li.live a.visited {
-        color: red;
-      }
+            li.dead, li.dead a, li.live a.visited {
+                color: red;
+            }
 
-      li.unread {
-        font-weight: bold;
-      }
+            li.unread {
+                font-weight: bold;
+            }
 
-      ul a {
-        cursor: pointer;
-      }
+            ul a {
+                cursor: pointer;
+            }
 
-      pre {
-				position: absolute;
-				left: 210px;
-				right: 0;
-				top: 20px;
-				bottom: 20px;
-        font-family: 'monaco', monospace;
-        display: block;
-        overflow: auto;
-        padding: 10px;
-				margin: 0;
-      }
-    </style>
-  </head>
-  <body>
-		<div id="container">
-			<header>
-				<form id="toolbar">
+            pre {
+                font-family: 'monaco', monospace;
+                display: block;
+                overflow: auto;
+                padding: 10px;
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <header>
+                <form id="toolbar">
                     <input type="button" id="settings-button" value="Settings" />
-					<input type="button" name="start" value="Start" />
-					<input type="button" name="stop" value="Stop" />
-				</form>
-			</header>
-			<div id="connection-panel">
-					<div id="no-connection-yet">
-							No connection yet
-					</div>
-					<ul id="connection-list">
-					</ul>
-			</div>
-			<pre id="log-container">Please select a connection in the left panel.</pre>
-			<footer>
-				Gallia est omnis divisa in partes tres.
-			</footer>
-		</div>
-  </body>
-  <script>
-    require('./renderer.js')
-  </script>
+                    <input type="button" name="start" value="Start" />
+                    <input type="button" name="stop" value="Stop" />
+                </form>
+            </header>
+            <div id="settings-container">
+                <form name="settings">
+                    <input type="text" name="host" value="127.0.0.1"/>
+                    :
+                    <input type="text" name="port" value="1911"/>
+                </form>
+            </div>
+            <div id="connection-panel">
+                    <div id="no-connection-yet">
+                            No connection yet
+                    </div>
+                    <ul id="connection-list">
+                    </ul>
+            </div>
+            <pre id="log-container">Please select a connection in the left panel.</pre>
+            <footer>
+                Gallia est omnis divisa in partes tres.
+            </footer>
+        </div>
+    </body>
+    <script>
+        require('./renderer.js')
+    </script>
 </html>
