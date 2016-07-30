@@ -32,7 +32,6 @@ class Connection {
     this.onLog = new LocalEvent();
     this.onClose = new LocalEvent();
 
-    var self 
     socket.on('data', (data) => {
       this.logs += data;
       this.onLog.trigger(this, data);
