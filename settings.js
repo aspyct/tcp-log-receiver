@@ -3,27 +3,10 @@ let initialPort = 1911;
 
 let hostKey = 'host';
 let portKey = 'port';
-let readyKey = 'ready';
 
 class Settings {
-    constructor() {
-        if (!this.ready) {
-            this.serverHost = initialHost;
-            this.serverPort = initialPort;
-            this.ready = true;
-        }
-    }
-
-    get ready() {
-        return localStorage.getItem(readyKey);
-    }
-
-    set ready(value) {
-        localStorage.setItem(readyKey, value);
-    }
-
     get serverHost() {
-        return localStorage.getItem(hostKey);
+        return localStorage.getItem(hostKey) || initialHost;
     }
 
     set serverHost(value) {
@@ -31,7 +14,7 @@ class Settings {
     }
 
     get serverPort() {
-        return localStorage.getItem(portKey);
+        return localStorage.getItem(portKey) || initialPort;
     }
 
     set serverPort(value) {
