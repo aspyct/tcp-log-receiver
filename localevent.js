@@ -1,26 +1,26 @@
 class LocalEvent {
     constructor() {
-        this.listeners = [];
+        this._listeners = new Map();
+        this._nextKey = 0;
     }
 
     listen(listener) {
-        var key = this.listeners.length;
-        this.listeners.push(listener);
+        var key = this._nextKey++;
+        this._listeners.set(key, listener);
 
         return new ListenerHandle(this, key);
     }
 
     _unregister(key) {
-        delete this.listeners[key];
+        this._listeners.delete(key);
     }
 
     trigger() {
-        for (var i = 0; i < this.listeners.length; ++i) {
-            var listener = this.listeners[i];
-            if (listener != undefined) {
-                listener.apply(listener, arguments);
-            }
-        }
+        var eventArgs = arguments;
+
+        this._listeners.forEach((listener) => {
+            listener.apply(listener, eventArgs);
+        });
     }
 
     static get NullListener() {
