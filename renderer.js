@@ -90,8 +90,8 @@ function updateLogContainer(message) {
 (function() { /* Manage settings panel appearance */
     var panel = document.getElementById('settings-panel');
 
-    server.onStarting.listen(() => panel.className = 'starting');
+    server.onStarting.listen(() => panel.className = 'busy');
     server.onStarted.listen(() => panel.className = 'started');
-    server.onClosing.listen(() => panel.className = 'closing');
+    server.onClosing.listen(() => panel.className = 'busy');
     server.onClosed.listen(() => panel.className = 'idle');
 }());

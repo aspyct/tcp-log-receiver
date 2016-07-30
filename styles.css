@@ -36,3 +36,19 @@ pre {
     padding: 10px;
     margin: 0;
 }
+
+#settings-panel > * {
+    display: none;
+}
+
+#settings-panel.idle form[name='serverIdle'] {
+    display: initial;
+}
+
+#settings-panel.busy div#server-busy {
+    display: initial;
+}
+
+#settings-panel.started form[name='serverRunning'] {
+    display: initial;
+}
