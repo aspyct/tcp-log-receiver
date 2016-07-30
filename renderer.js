@@ -128,5 +128,3 @@ server.on('close', function() {
 });
 
 settingsForm.stop.style.display = 'none';
-
-// vim: et ts=2 sw=2:
