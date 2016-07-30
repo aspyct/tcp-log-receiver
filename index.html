@@ -9,31 +9,8 @@
                 padding: 0;
                 height: 100%;
 
-                font-family: 'monaco', 'inconsolata', monospace;
+                font-family: 'inconsolata';
                 color: #444;
-            }
-
-            header {
-                border-bottom: 1px solid black;
-                height: 20px;
-            }
-
-            footer {
-                width: 100%;
-                bottom: 0;
-                border-top: 1px solid black;
-            }
-
-            #container {
-                position: relative;
-                height: auto;
-                min-height: 100%;
-            }
-
-            #connection-panel {
-                width: 190px;
-                background-color: #EEE;
-                padding: 10px;
             }
 
             ul {
@@ -66,33 +43,28 @@
         </style>
     </head>
     <body>
-        <div id="container">
-            <header>
-                <form id="toolbar">
-                    <input type="button" id="settings-button" value="Settings" />
-                    <input type="button" name="start" value="Start" />
-                    <input type="button" name="stop" value="Stop" />
-                </form>
-            </header>
-            <div id="settings-container">
-                <form name="settings">
-                    <input type="text" name="host" value="127.0.0.1"/>
-                    :
-                    <input type="text" name="port" value="1911"/>
-                </form>
-            </div>
-            <div id="connection-panel">
-                    <div id="no-connection-yet">
-                            No connection yet
-                    </div>
-                    <ul id="connection-list">
-                    </ul>
-            </div>
-            <pre id="log-container">Please select a connection in the left panel.</pre>
-            <footer>
-                Gallia est omnis divisa in partes tres.
-            </footer>
+        <div id="settings-panel" class="idle">
+            <form name="serverIdle">
+                <input type="text" name="host" value="127.0.0.1"/>
+                :
+                <input type="text" name="port" value="1911"/>
+                <input type="button" name="startButton" value="Start"/>
+            </form>
+            <div id="serverBusy">
+                Please wait...
+            <div>
+            <form name="serverRunning">
+                <input type="button" name="stopButton" value="Stop"/>
+            </form>
         </div>
+        <div id="connection-panel">
+            <div id="no-connection-yet">
+                No connection yet
+            </div>
+            <ul id="connection-list">
+            </ul>
+        </div>
+        <pre id="log-container">Waiting for the first connection.</pre>
     </body>
     <script>
         require('./renderer.js')
