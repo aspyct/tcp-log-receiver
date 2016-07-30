@@ -62,6 +62,9 @@ function updateLogContainer(message) {
     /* Idle server form */
     var form = document.forms.serverIdle;
 
+    form.host.value = settings.serverHost;
+    form.port.value = settings.serverPort;
+
     form.startButton.onclick = () => {
         /* Read settings from form */
         var host = form.host.value;
