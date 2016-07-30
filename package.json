@@ -1,27 +1,25 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "tcp-log-receiver",
+  "version": "0.0.0",
+  "description": "A simple TCP server that displays text received",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron/electron-quick-start.git"
+    "url": "git+https://github.com/aspyct/tcp-log-receiver.git"
   },
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial"
+    "tcp",
+    "server",
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "author": "Antoine d'Otreppe",
+  "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/electron/electron-quick-start/issues"
+    "url": "https://github.com/aspyct/tcp-log-receiver/issues"
   },
-  "homepage": "https://github.com/electron/electron-quick-start#readme",
+  "homepage": "https://github.com/aspyct/tcp-log-receaver#readme",
   "devDependencies": {
     "electron-prebuilt": "^1.2.0"
   }
