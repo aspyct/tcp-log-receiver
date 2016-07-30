@@ -1,0 +1,38 @@
+/*
+ * Base setup: fonts, screen size etc.
+ */
+html,body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+
+    font-family: 'inconsolata';
+    color: #444;
+}
+
+ul {
+    margin: 0;
+}
+
+li.live, li.live a, li.live a.visited {
+    color: green;
+}
+
+li.dead, li.dead a, li.live a.visited {
+    color: red;
+}
+
+li.unread {
+    font-weight: bold;
+}
+
+ul a {
+    cursor: pointer;
+}
+
+pre {
+    display: block;
+    overflow: auto;
+    padding: 10px;
+    margin: 0;
+}

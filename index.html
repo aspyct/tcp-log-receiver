@@ -3,44 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>TCP Log Receiver</title>
-        <style>
-            html,body {
-                margin: 0;
-                padding: 0;
-                height: 100%;
-
-                font-family: 'inconsolata';
-                color: #444;
-            }
-
-            ul {
-                margin: 0;
-            }
-
-            li.live, li.live a, li.live a.visited {
-                color: green;
-            }
-
-            li.dead, li.dead a, li.live a.visited {
-                color: red;
-            }
-
-            li.unread {
-                font-weight: bold;
-            }
-
-            ul a {
-                cursor: pointer;
-            }
-
-            pre {
-                font-family: 'monaco', monospace;
-                display: block;
-                overflow: auto;
-                padding: 10px;
-                margin: 0;
-            }
-        </style>
+        <link rel="stylesheet" href="styles.css"/>
     </head>
     <body>
         <div id="settings-panel" class="idle">
