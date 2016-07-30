@@ -93,5 +93,5 @@ function updateLogContainer(message) {
     server.onStarting.listen(() => panel.className = 'starting');
     server.onStarted.listen(() => panel.className = 'started');
     server.onClosing.listen(() => panel.className = 'closing');
-    server.onClosed.listen(() => panel.className = 'closed');
+    server.onClosed.listen(() => panel.className = 'idle');
 }());
