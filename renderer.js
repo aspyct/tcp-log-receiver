@@ -1,6 +1,7 @@
 var LocalEvent = require('./localevent.js');
 var settings = require('./settings.js');
 var server = require('./server.js');
+var Select = require('./select.js');
 
 /* HTML nodes */
 var logContainer = document.getElementById('log-container');
@@ -9,37 +10,24 @@ var firstConnectionListener = server.onConnection.listen((conn) => {
     // Run this only for the first connection
     firstConnectionListener.unregister();
 
-    // Remove the "no connection" label
-    document.getElementById('no-connection-yet').style.display = 'none';
-
-    // And open the first connection
+    // Open the first connection
     openConnection(conn);
 });
 
-server.onConnection.listen((connection) => {
-    // Create and add the list entry for this connection
-    var li = document.createElement('li');
-    var a = document.createElement('a');
-    a.innerText = connection.name;
-    a.onclick = function() {
-        li.classList.remove('unread');
-        openConnection(connection);
-    };
+/*
+ * Connection list
+ */
+(function() {
+    var select = new Select(document.getElementById('connection-list'));
 
-    li.appendChild(a);
-
-    // Show whether the connection is dead or alive
-    li.classList.add('live');
-    connection.onClose.listen(() => {
-        li.classList.remove('live');
-        li.classList.add('dead');
-    });
-    connection.onLog.listen(() => {
-        li.classList.add('unread');
+    select.onSelect.listen((conn) => {
+        openConnection(conn);
     });
 
-    document.getElementById('connection-list').appendChild(li);
-});
+    server.onConnection.listen((conn) => {
+        select.add(conn);
+    });
+}());
 
 var logListener = LocalEvent.NullListener;
 function openConnection(connection) {

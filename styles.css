@@ -10,6 +10,19 @@ html,body {
     color: #444;
 }
 
+#connection-panel {
+    width: 200px;
+    float: left;
+}
+
+#log-container {
+    display: block;
+    margin-left: 210px;
+    overflow: auto;
+    padding: 10px;
+    margin: 0;
+}
+
 ul {
     margin: 0;
 }
@@ -30,13 +43,10 @@ ul a {
     cursor: pointer;
 }
 
-pre {
-    display: block;
-    overflow: auto;
-    padding: 10px;
-    margin: 0;
-}
-
+/*
+ * Only one of the settings-panel children must be visible at a time.
+ * Javascript will use `idle`, `busy` and `started` classes.
+ */
 #settings-panel > * {
     display: none;
 }

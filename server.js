@@ -54,6 +54,10 @@ class Connection {
             this.onClose.trigger(this);
         });
     }
+
+    toString() {
+        return this.name;
+    }
 };
 
 module.exports = new Server();
