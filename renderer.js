@@ -1,5 +1,4 @@
-var net = require('net');
-var server = net.createServer();
+var server = require('net').createServer();
 var LocalEvent = require('./localevent.js');
 var settings = require('./settings.js');
 
