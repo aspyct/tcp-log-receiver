@@ -42,6 +42,9 @@ class Connection {
         this.onLog = new LocalEvent();
         this.onClose = new LocalEvent();
 
+        // Make sure to receive utf8-decoded string
+        socket.setEncoding('utf8');
+
         socket.on('data', (data) => {
             this.logs += data;
             this.onLog.trigger(data, this);
