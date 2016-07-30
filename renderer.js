@@ -3,11 +3,6 @@ var server = net.createServer();
 var LocalEvent = require('./localevent.js');
 var settings = require('./settings.js');
 
-// Register action for Settings button
-document.getElementById('settings-button').onclick = () => {
-  window.open('settings.html');
-};
-
 var logContainer = document.getElementById('log-container');
 var selectedConnection = null;
 
